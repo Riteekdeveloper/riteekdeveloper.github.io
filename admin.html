@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login | RITIK.DEV</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #fff;
+      background:
+        radial-gradient(circle at top, #351010, transparent 45%),
+        #080808;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+      padding: 32px 25px;
+      background: #141414;
+      border: 1px solid #492020;
+      border-radius: 18px;
+      box-shadow: 0 0 35px #ff202018;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 29px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .logo span {
+      color: #ff3030;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      border: 1px solid #383838;
+      background: #090909;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ff3030;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px;
+      border: none;
+      border-radius: 9px;
+      background: #e52424;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    #message {
+      margin-top: 17px;
+      font-size: 13px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 22px;
+      text-align: center;
+      color: #bbb;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .back-link:hover {
+      color: #ff4040;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .note {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #aaa;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="login-box">
+    <div class="logo">RITIK<span>.DEV</span></div>
+    <p class="subtitle">Secure Administrator Login</p>
+
+    <form id="loginForm">
+      <label for="email">Admin Email</label>
+      <input
+        id="email"
+        type="email"
+        autocomplete="username"
+        placeholder="Enter your admin email"
+        required
+      >
+
+      <label for="password">Password</label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+        required
+      >
+
+      <button id="loginButton" type="submit">Secure Login</button>
+    </form>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <section id="dashboard">
+      <h2>Admin Access Verified</h2>
+      <p class="note">
+        You are signed in. Project management will be added next.
+      </p>
+      <button id="logoutButton" type="button">Logout</button>
+    </section>
+
+    <a class="back-link" href="index.html">← Back to Website</a>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    // Your Supabase project URL
+    const SUPABASE_URL = "https://oexxggdbvvujvnfgrxlp.supabase.co";
+
+    // Replace this with your Supabase Publishable key.
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-";
+
+    // The UID you allowed in your database security policies
+    const ADMIN_UID = "9a01399e-f0d8-4dbe-acbd-2f077397751b";
+
+    const message = document.getElementById("message");
+    const loginForm = document.getElementById("loginForm");
+    const loginButton = document.getElementById("loginButton");
+    const dashboard = document.getElementById("dashboard");
+
+    let supabaseClient = null;
+
+    function showMessage(text, success = false) {
+      message.textContent = text;
+      message.style.color = success ? "#5cff9d" : "#ff7777";
+    }
+
+    function showAdmin() {
+      loginForm.style.display = "none";
+      dashboard.style.display = "block";
+      showMessage("Admin identity verified.", true);
+    }
+
+    async function startAdmin() {
+      if (!window.supabase) {
+        showMessage("Supabase library load nahi hui. Internet check karo.");
+        return;
+      }
+
+      if (
+        !SUPABASE_PUBLISHABLE_KEY ||
+        SUPABASE_PUBLISHABLE_KEY === "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-"
+      ) {
+        showMessage("Pehle apni Supabase Publishable key code mein paste karo.");
+        return;
+      }
+
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY
+      );
+
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) {
+        showMessage("Session check nahi ho saka. Dobara try karo.");
+        return;
+      }
+
+      const user = data.session?.user;
+
+      if (user && user.id === ADMIN_UID) {
+        showAdmin();
+      } else if (user) {
+        await supabaseClient.auth.signOut();
+        showMessage("Is account ko Admin access nahi hai.");
+      }
+    }
+
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabaseClient) {
+        await startAdmin();
+      }
+
+      if (!supabaseClient) return;
+
+      loginButton.disabled = true;
+      loginButton.textContent = "Checking...";
+      showMessage("");
+
+      try {
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          showMessage("Login nahi hua. Email aur password check karo.");
+          return;
+        }
+
+        if (data.user.id !== ADMIN_UID) {
+          await supabaseClient.auth.signOut();
+          showMessage("Is account ko Admin access nahi hai.");
+          return;
+        }
+
+        showAdmin();
+      } catch (error) {
+        showMessage("Connection error. Internet check karke dobara try karo.");
+      } finally {
+        loginButton.disabled = false;
+        loginButton.textContent = "Secure Login";
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+
+      dashboard.style.display = "none";
+      loginForm.style.display = "block";
+      loginForm.reset();
+      showMessage("You have logged out.", true);
+    });
+
+    startAdmin();
+  </script>
+</body>
+  </html>
+    
