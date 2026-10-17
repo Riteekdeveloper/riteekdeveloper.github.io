@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080808">
   <title>Admin Login | RITIK.DEV</title>
 
   <style>
@@ -15,32 +16,31 @@
 
     body {
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      display: grid;
+      place-items: center;
       padding: 20px;
       color: #fff;
       background:
-        radial-gradient(circle at top, #351010, transparent 45%),
+        radial-gradient(ellipse at top, #3b1010 0%, transparent 50%),
         #080808;
     }
 
     .login-box {
       width: 100%;
-      max-width: 400px;
+      max-width: 410px;
       padding: 32px 25px;
       background: #141414;
       border: 1px solid #492020;
       border-radius: 18px;
-      box-shadow: 0 0 35px #ff202018;
+      box-shadow: 0 0 40px #ff202018;
     }
 
     .logo {
       text-align: center;
-      font-size: 29px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
       letter-spacing: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 9px;
     }
 
     .logo span {
@@ -50,8 +50,19 @@
     .subtitle {
       text-align: center;
       color: #aaa;
-      margin-bottom: 28px;
       font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .security {
+      padding: 11px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #ff7777;
+      background: #ff30300c;
+      border: 1px solid #4b2424;
+      border-radius: 9px;
+      font-size: 12px;
     }
 
     label {
@@ -63,40 +74,81 @@
 
     input {
       width: 100%;
-      padding: 13px;
+      padding: 14px;
       border-radius: 9px;
       border: 1px solid #383838;
       background: #090909;
       color: white;
       outline: none;
+      font-size: 15px;
     }
 
     input:focus {
       border-color: #ff3030;
+      box-shadow: 0 0 0 2px #ff303018;
     }
 
     button {
       width: 100%;
       margin-top: 20px;
-      padding: 13px;
+      padding: 14px;
       border: none;
       border-radius: 9px;
       background: #e52424;
       color: white;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
+      transition: background .2s, transform .2s;
+    }
+
+    button:hover {
+      background: #ff3535;
+    }
+
+    button:active {
+      transform: scale(.99);
     }
 
     button:disabled {
-      opacity: 0.6;
+      opacity: .6;
       cursor: wait;
     }
 
     #message {
-      margin-top: 17px;
+      margin-top: 16px;
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.6;
       overflow-wrap: anywhere;
+    }
+
+    #dashboard {
+      display: none;
+    }
+
+    .success-icon {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      margin: 0 auto 17px;
+      border-radius: 50%;
+      background: #10351e;
+      color: #65ff9a;
+      font-size: 28px;
+    }
+
+    #dashboard h2 {
+      text-align: center;
+      font-size: 22px;
+    }
+
+    .note {
+      margin-top: 12px;
+      text-align: center;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.6;
     }
 
     .back-link {
@@ -112,15 +164,11 @@
       color: #ff4040;
     }
 
-    #dashboard {
-      display: none;
-    }
-
-    .note {
-      margin-top: 12px;
-      font-size: 12px;
-      color: #aaa;
-      line-height: 1.5;
+    .footer {
+      margin-top: 25px;
+      text-align: center;
+      color: #666;
+      font-size: 11px;
     }
   </style>
 </head>
@@ -128,7 +176,11 @@
 <body>
   <main class="login-box">
     <div class="logo">RITIK<span>.DEV</span></div>
-    <p class="subtitle">Secure Administrator Login</p>
+    <p class="subtitle">Secure Administrator Portal</p>
+
+    <div class="security">
+      🔒 Protected Admin Access
+    </div>
 
     <form id="loginForm">
       <label for="email">Admin Email</label>
@@ -149,44 +201,65 @@
         required
       >
 
-      <button id="loginButton" type="submit">Secure Login</button>
+      <button id="loginButton" type="submit">
+        SECURE LOGIN →
+      </button>
     </form>
+
+    <section id="dashboard">
+      <div class="success-icon">✓</div>
+      <h2>Admin Access Verified</h2>
+      <p class="note">
+        Your identity has been verified successfully.
+        The project management dashboard will be added next.
+      </p>
+      <button id="logoutButton" type="button">LOGOUT</button>
+    </section>
 
     <p id="message" role="status" aria-live="polite"></p>
 
-    <section id="dashboard">
-      <h2>Admin Access Verified</h2>
-      <p class="note">
-        You are signed in. Project management will be added next.
-      </p>
-      <button id="logoutButton" type="button">Logout</button>
-    </section>
+    <a class="back-link" href="index.html">
+      ← Back to RITIK.DEV
+    </a>
 
-    <a class="back-link" href="index.html">← Back to Website</a>
+    <div class="footer">
+      RITIK.DEV · ADMIN PORTAL
+    </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // Your Supabase project URL
-    const SUPABASE_URL = "https://oexxggdbvvujvnfgrxlp.supabase.co";
+    // Supabase project settings
+    const SUPABASE_URL =
+      "https://oexxggdbvvujvnfgrxlp.supabase.co";
 
-    // Replace this with your Supabase Publishable key.
-    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-";
+    // Use only the Publishable key here.
+    // Never put a secret or service_role key in frontend code.
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-";
 
-    // The UID you allowed in your database security policies
-    const ADMIN_UID = "9a01399e-f0d8-4dbe-acbd-2f077397751b";
+    // Your authorized Supabase user ID
+    const ADMIN_UID =
+      "9a01399e-f0d8-4dbe-acbd-2f077397751b";
 
-    const message = document.getElementById("message");
     const loginForm = document.getElementById("loginForm");
     const loginButton = document.getElementById("loginButton");
     const dashboard = document.getElementById("dashboard");
+    const message = document.getElementById("message");
+    const logoutButton = document.getElementById("logoutButton");
 
     let supabaseClient = null;
+    let busy = false;
 
     function showMessage(text, success = false) {
       message.textContent = text;
-      message.style.color = success ? "#5cff9d" : "#ff7777";
+      message.style.color = success ? "#65ff9a" : "#ff7777";
+    }
+
+    function showLogin() {
+      loginForm.style.display = "block";
+      dashboard.style.display = "none";
     }
 
     function showAdmin() {
@@ -195,18 +268,25 @@
       showMessage("Admin identity verified.", true);
     }
 
-    async function startAdmin() {
+    async function initializeSupabase() {
+      if (supabaseClient) return true;
+
       if (!window.supabase) {
-        showMessage("Supabase library load nahi hui. Internet check karo.");
-        return;
+        showMessage(
+          "Supabase library load nahi hui. Internet check karke page reload karo."
+        );
+        return false;
       }
 
       if (
         !SUPABASE_PUBLISHABLE_KEY ||
-        SUPABASE_PUBLISHABLE_KEY === "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-"
+        SUPABASE_PUBLISHABLE_KEY ===
+          "sb_publishable_mMrn_3BDKPDio03WdCh6qQ_DEXBN8C-"
       ) {
-        showMessage("Pehle apni Supabase Publishable key code mein paste karo.");
-        return;
+        showMessage(
+          "Pehle apni Publishable key code mein paste karo."
+        );
+        return false;
       }
 
       supabaseClient = window.supabase.createClient(
@@ -214,52 +294,70 @@
         SUPABASE_PUBLISHABLE_KEY
       );
 
-      const { data, error } = await supabaseClient.auth.getSession();
-
-      if (error) {
-        showMessage("Session check nahi ho saka. Dobara try karo.");
-        return;
-      }
-
-      const user = data.session?.user;
-
-      if (user && user.id === ADMIN_UID) {
-        showAdmin();
-      } else if (user) {
-        await supabaseClient.auth.signOut();
-        showMessage("Is account ko Admin access nahi hai.");
-      }
+      return true;
     }
 
-    loginForm.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      if (!supabaseClient) {
-        await startAdmin();
-      }
-
-      if (!supabaseClient) return;
-
-      loginButton.disabled = true;
-      loginButton.textContent = "Checking...";
-      showMessage("");
+    async function checkCurrentSession() {
+      if (!(await initializeSupabase())) return;
 
       try {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
-
         const { data, error } =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
+          await supabaseClient.auth.getSession();
 
-        if (error) {
-          showMessage("Login nahi hua. Email aur password check karo.");
+        if (error) throw error;
+
+        const user = data.session?.user;
+
+        if (!user) {
+          showLogin();
           return;
         }
 
-        if (data.user.id !== ADMIN_UID) {
+        if (user.id !== ADMIN_UID) {
+          await supabaseClient.auth.signOut();
+          showLogin();
+          showMessage("Is account ko Admin access nahi hai.");
+          return;
+        }
+
+        showAdmin();
+      } catch (error) {
+        showLogin();
+        showMessage("Session check nahi ho saka. Dobara try karo.");
+      }
+    }
+
+    loginForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      if (busy) return;
+
+      busy = true;
+      loginButton.disabled = true;
+      loginButton.textContent = "VERIFYING...";
+      showMessage("");
+
+      try {
+        if (!(await initializeSupabase())) return;
+
+        const email =
+          document.getElementById("email").value.trim();
+
+        const password =
+          document.getElementById("password").value;
+
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+          });
+
+        if (error) {
+          showMessage("Login failed. Email ya password check karo.");
+          return;
+        }
+
+        if (!data.user || data.user.id !== ADMIN_UID) {
           await supabaseClient.auth.signOut();
           showMessage("Is account ko Admin access nahi hai.");
           return;
@@ -267,26 +365,35 @@
 
         showAdmin();
       } catch (error) {
-        showMessage("Connection error. Internet check karke dobara try karo.");
+        showMessage("Connection error. Internet check karke try karo.");
       } finally {
+        busy = false;
         loginButton.disabled = false;
-        loginButton.textContent = "Secure Login";
+        loginButton.textContent = "SECURE LOGIN →";
       }
     });
 
-    document.getElementById("logoutButton").addEventListener("click", async () => {
-      if (supabaseClient) {
-        await supabaseClient.auth.signOut();
-      }
+    logoutButton.addEventListener("click", async function() {
+      if (!supabaseClient) return;
 
-      dashboard.style.display = "none";
-      loginForm.style.display = "block";
-      loginForm.reset();
-      showMessage("You have logged out.", true);
+      logoutButton.disabled = true;
+
+      try {
+        const { error } = await supabaseClient.auth.signOut();
+
+        if (error) throw error;
+
+        loginForm.reset();
+        showLogin();
+        showMessage("You have logged out.", true);
+      } catch (error) {
+        showMessage("Logout nahi ho saka. Dobara try karo.");
+      } finally {
+        logoutButton.disabled = false;
+      }
     });
 
-    startAdmin();
+    checkCurrentSession();
   </script>
 </body>
-  </html>
-    
+</html>
